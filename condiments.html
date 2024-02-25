@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Order</title>
+    <style>
+        body {
+            background-color: #F8EACA;
+        }
+        /* Create a top navigation bar with a black background color  */
+        .topnav {
+            overflow: hidden;
+        }
+
+        /* Style the links inside the navigation bar */
+        .topnav a {
+        float: left;
+        color: brown;
+        font-weight: bold;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 20px;
+        }
+
+        /* Change the color of links on hover */
+        .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+        }
+
+        /* Create a right-aligned (split) link inside the navigation bar */
+        .topnav a.split {
+        float: right;
+        color: black;
+        font-weight: bold;
+        }
+
+        .center {
+            display: flex;
+            justify-content: space-between;
+            height: 60px;
+            padding: 20px;
+        }
+        .center2 {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 60px;
+            padding: 20px;
+        }
+
+        .select-text {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 48%;
+        }
+
+        .order-button {
+            flex: 1;
+            padding: 20px;
+            background-color: burlywood;
+            color: black;
+            font-size: 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .order-button:hover {
+            background-color: #8B735B;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* My Order Section Styles */
+        .my-order-section {
+            width: 48%;
+        }
+
+        .my-order-container {
+            border: 2px solid black;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .order-item {
+            margin: 10px;
+        }
+
+        .confirm-order-button {
+    background-color: burlywood;
+    color: black;
+    font-size: 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    margin: 20px;
+}
+
+.confirm-order-button:hover {
+    background-color: #8B735B;
+}
+    </style>
+</head>
+<body>
+    <div class="topnav">
+        <a href="index.html">Coffee Order System</a>
+        <a href="#orderStatus" class="split">Order Status</a>
+    </div>
+
+    <div class="center2">
+    <p class="select-text">Add the Condiments</p>
+    </div>
+
+    <div class="center">
+        <div class="button-container">
+            <button class="order-button">Milk</button>
+            <button class="order-button">Soy</button>
+        </div>
+        <div class="button-container">
+            <button class="order-button">Mocha</button>
+            <button class="order-button">Whip</button>
+        </div>
+
+        <!-- My Order Section -->
+        <div class="my-order-section">
+            <div class="my-order-container">
+                <h2>My Order</h2>
+                <div class="order-item">Item 1</div>
+            </div>
+            <a href="confirm.html" class="confirm-order-button">Confirm Order</a>
+        </div>
+    </div>
+    
+
+    
+
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+    const cartContainer = document.querySelector(".my-order-container");
+
+    // Sample data for the cart items
+    const cartItems = [];
+
+    // Function to render cart items
+    function renderCart() {
+        cartContainer.innerHTML = "<h2>My Cart</h2>";
+        cartItems.forEach(item => {
+            const cartItemElement = document.createElement("div");
+            cartItemElement.classList.add("cart-item");
+            cartItemElement.textContent = item;
+
+            // Add click event to remove item from cart
+            cartItemElement.addEventListener("click", function () {
+                removeItemFromCart(item);
+            });
+
+            cartContainer.appendChild(cartItemElement);
+        });
+    }
+
+    // Initial render of the cart
+    renderCart();
+
+    // Function to add item to cart
+    function addItemToCart(item) {
+        cartItems.push(item);
+        renderCart();
+    }
+
+    // Function to remove item from cart
+    function removeItemFromCart(item) {
+        const index = cartItems.indexOf(item);
+        if (index !== -1) {
+            cartItems.splice(index, 1);
+            renderCart();
+        }
+    }
+
+    // Sample data for the selected beverage
+    const selectedBeverage = "Espresso";
+
+    // Click event for selected beverage in the cart
+    const selectedBeverageElement = document.createElement("div");
+    selectedBeverageElement.classList.add("cart-item");
+    selectedBeverageElement.textContent = selectedBeverage + " (Click to remove)";
+
+    selectedBeverageElement.addEventListener("click", function () {
+        removeBeverageFromCart();
+    });
+
+    cartContainer.appendChild(selectedBeverageElement);
+
+    // Function to remove selected beverage from cart and navigate back to beverage page
+    function removeBeverageFromCart() {
+        // Assuming you have a function to navigate back to the beverage page
+        // You can replace this with your actual navigation logic
+        alert("Removing selected beverage and navigating back to the beverage page");
+        // Example: window.location.href = "beverage.html";
+    }
+
+    // Click event for condiment buttons
+    const condimentButtons = document.querySelectorAll(".order-button");
+
+    condimentButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const condiment = button.textContent;
+            addItemToCart(condiment);
+        });
+    });
+});
+    </script>
+</body>
+</html>

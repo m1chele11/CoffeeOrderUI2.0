@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Order</title>
+    <style>
+        body {
+            background-color: #F8EACA;
+        }
+        /* Create a top navigation bar with a black background color  */
+        .topnav {
+            overflow: hidden;
+        }
+
+        /* Style the links inside the navigation bar */
+        .topnav a {
+        float: left;
+        color: brown;
+        font-weight: bold;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 20px;
+        }
+
+        /* Change the color of links on hover */
+        .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+        }
+
+        /* Create a right-aligned (split) link inside the navigation bar */
+        .topnav a.split {
+        float: right;
+        color: black;
+        font-weight: bold;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh; /* Adjust the height as needed */
+        }
+
+        .order-button {
+            padding: 30px;
+            background-color: burlywood;
+            color: black;
+            font-size: 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+
+        }
+
+        .order-button:hover {
+            background-color: #8B735B; /* Darker brown color on hover */
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav">
+        <a href="#home">Coffee Order System</a>
+        <a href="#orderStatus" class="split">Order Status</a>
+    </div>
+
+    <div class="center">
+       Order Placed:
+       <br>
+       id:24
+       <br>
+       Dark Roast
+       <br>
+       Total: 4.45
+    </div>
+    
+</body>
+</html>
