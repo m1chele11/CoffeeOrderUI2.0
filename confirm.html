@@ -66,7 +66,7 @@
 </head>
 <body>
     <div class="topnav">
-        <a href="#home">Coffee Order System</a>
+        <a href="index.html">Coffee Order System</a>
         <a href="#orderStatus" class="split">Order Status</a>
     </div>
 
@@ -82,3 +82,61 @@
     
 </body>
 </html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Your existing code
+
+        // Function to submit the order to the backend
+        function submitOrder() {
+            // Sample data for the selected beverage and condiments
+            const selectedBeverage = localStorage.getItem("selectedBeverage") || "Unknown Beverage";
+            const selectedCondiments = JSON.parse(localStorage.getItem("selectedCondiments")) || [];
+
+            // Create an order object to send to the backend
+            const order = {
+                beverage: selectedBeverage,
+                condiments: selectedCondiments,
+            };
+
+            // Assuming you have the backend API endpoint for submitting orders
+            // Replace 'your_backend_endpoint' with the actual endpoint
+            const backendEndpoint = 'http://localhost:8081/orders';
+
+            // Make a POST request to submit the order
+            fetch(backendEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(order),
+            })
+            .then(response => response.json())
+            .then(receipt => {
+                // Display the receipt information on the confirmation page
+                displayReceipt(receipt);
+            })
+            .catch(error => console.error('Error submitting order:', error));
+        }
+
+        // Function to display the receipt on the confirmation page
+        function displayReceipt(receipt) {
+            const confirmationContainer = document.querySelector(".center");
+            confirmationContainer.innerHTML = `
+                Order Placed:
+                <br>
+                id: ${receipt.id}
+                <br>
+                ${receipt.description}
+                <br>
+                Total: ${receipt.cost.toFixed(2)}
+            `;
+        }
+
+        // Event listener for the order confirmation button
+        const confirmOrderButton = document.querySelector(".order-button");
+        confirmOrderButton.addEventListener("click", function () {
+            // Submit the order when the button is clicked
+            submitOrder();
+        });
+    });
+</script>

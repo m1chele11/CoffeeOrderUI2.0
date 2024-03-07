@@ -144,84 +144,120 @@
             <a href="confirm.html" class="confirm-order-button">Confirm Order</a>
         </div>
     </div>
-    
-
-    
-
     <script>
-       document.addEventListener("DOMContentLoaded", function () {
-    const cartContainer = document.querySelector(".my-order-container");
+        document.addEventListener("DOMContentLoaded", async function () {
+            const cartContainer = document.querySelector(".my-order-container");
+            const selectedBeverage = localStorage.getItem("selectedBeverage") || "Unknown Beverage";
+            const condimentPrices = await fetchCondimentPrices(selectedBeverage);
 
-    // Sample data for the cart items
-    const cartItems = [];
+            const cartItems = [];
 
-    // Function to render cart items
-    function renderCart() {
-        cartContainer.innerHTML = "<h2>My Cart</h2>";
-        cartItems.forEach(item => {
-            const cartItemElement = document.createElement("div");
-            cartItemElement.classList.add("cart-item");
-            cartItemElement.textContent = item;
+            function renderCart() {
+                cartContainer.innerHTML = "<h2>My Cart</h2>";
+                cartItems.forEach(item => {
+                    const cartItemElement = document.createElement("div");
+                    cartItemElement.classList.add("cart-item");
+                    cartItemElement.textContent = item;
 
-            // Add click event to remove item from cart
-            cartItemElement.addEventListener("click", function () {
-                removeItemFromCart(item);
+                    // Add click event to remove item from cart
+                    cartItemElement.addEventListener("click", function () {
+                        removeItemFromCart(item);
+                    });
+
+                    cartContainer.appendChild(cartItemElement);
+                });
+            }
+
+            function addItemToCart(item) {
+                cartItems.push(item);
+                renderCart();
+                calculateTotalCost(); // Calculate and display total cost
+
+                // Store the updated condiments in localStorage
+                localStorage.setItem("selectedCondiments", JSON.stringify(cartItems));
+            }
+
+            function removeItemFromCart(item) {
+                const index = cartItems.indexOf(item);
+                if (index !== -1) {
+                    cartItems.splice(index, 1);
+                    renderCart();
+                    calculateTotalCost();
+                }
+            }
+
+            // Function to calculate and display total cost
+            // Function to calculate and display total cost
+            async function calculateTotalCost() {
+                            const totalCostElement = document.createElement("div");
+                totalCostElement.classList.add("cart-item");
+
+                // Sample data for the selected beverage
+                const selectedBeverage = localStorage.getItem("selectedBeverage") || "Unknown Beverage";
+
+                try {
+                    // Fetch condiment prices based on the selected beverage
+                    const condimentPrices = await fetchCondimentPrices(selectedBeverage);
+                    console.log('Condiment Prices after fetching:', condimentPrices);
+                    // Log the fetched condiment prices to the console
+                    console.log('Fetched Condiment Prices:', condimentPrices);
+
+                    // Calculate total cost based on the number of condiments and their respective prices
+                    const totalCost = cartItems.reduce((acc, condiment) => {
+                        const condimentPrice = condimentPrices[condiment] || 0;
+                        console.log(`Condiment: ${condiment}, Price: ${condimentPrice}`);
+                        return acc + condimentPrice;
+                    }, 0);
+
+                    // Add the base beverage cost to the total
+                    const beverageCost = condimentPrices[selectedBeverage] || 0;
+
+                    // Log the calculated total cost to the console
+                    console.log(`Total Cost before adding base beverage cost: ${totalCost}`);
+                    console.log(`Base Beverage Cost: ${beverageCost}`);
+
+                    const finalTotalCost = totalCost + beverageCost;
+
+                    // Log the calculated total cost to the console
+                    console.log('Calculated Total Cost:', finalTotalCost);
+
+                    totalCostElement.textContent = `Total: $${finalTotalCost.toFixed(2)} - ${selectedBeverage}`;
+                    cartContainer.appendChild(totalCostElement);
+                } catch (error) {
+                    console.error('Error calculating total cost:', error);
+                }
+            }
+
+            const condimentButtons = document.querySelectorAll(".order-button");
+
+            condimentButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    const condiment = button.textContent;
+                    addItemToCart(condiment);
+                });
             });
 
-            cartContainer.appendChild(cartItemElement);
-        });
-    }
+            // Function to fetch condiment prices from the backend
+            async function fetchCondimentPrices(selectedBeverage) {
+                try {
+                    const response = await fetch(`http://localhost:8081/condimentPrices?beverage=${selectedBeverage}`);
+                    if (!response.ok) {
+                        throw new Error(`Error fetching condiment prices: ${response.statusText}`);
+                    }
 
-    // Initial render of the cart
-    renderCart();
+                    const data = await response.json();
+                    console.log('Fetched Condiment Prices:', data);
 
-    // Function to add item to cart
-    function addItemToCart(item) {
-        cartItems.push(item);
-        renderCart();
-    }
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching condiment prices:', error);
+                    throw error;
+                }
+            }
 
-    // Function to remove item from cart
-    function removeItemFromCart(item) {
-        const index = cartItems.indexOf(item);
-        if (index !== -1) {
-            cartItems.splice(index, 1);
+            // Initial render of the cart
             renderCart();
-        }
-    }
-
-    // Sample data for the selected beverage
-    const selectedBeverage = "Espresso";
-
-    // Click event for selected beverage in the cart
-    const selectedBeverageElement = document.createElement("div");
-    selectedBeverageElement.classList.add("cart-item");
-    selectedBeverageElement.textContent = selectedBeverage + " (Click to remove)";
-
-    selectedBeverageElement.addEventListener("click", function () {
-        removeBeverageFromCart();
-    });
-
-    cartContainer.appendChild(selectedBeverageElement);
-
-    // Function to remove selected beverage from cart and navigate back to beverage page
-    function removeBeverageFromCart() {
-        // Assuming you have a function to navigate back to the beverage page
-        // You can replace this with your actual navigation logic
-        alert("Removing selected beverage and navigating back to the beverage page");
-        // Example: window.location.href = "beverage.html";
-    }
-
-    // Click event for condiment buttons
-    const condimentButtons = document.querySelectorAll(".order-button");
-
-    condimentButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            const condiment = button.textContent;
-            addItemToCart(condiment);
         });
-    });
-});
     </script>
 </body>
 </html>
