@@ -150,6 +150,9 @@
             const selectedBeverage = localStorage.getItem("selectedBeverage") || "Unknown Beverage";
             const condimentPrices = await fetchCondimentPrices(selectedBeverage);
 
+            const confirmOrderButton = document.querySelector(".confirm-order-button");//confirm button
+
+
             const cartItems = [];
 
             function renderCart() {
@@ -186,7 +189,6 @@
                 }
             }
 
-            // Function to calculate and display total cost
             // Function to calculate and display total cost
             async function calculateTotalCost() {
                             const totalCostElement = document.createElement("div");
@@ -228,6 +230,20 @@
                 }
             }
 
+            // Function to display the receipt on the confirmation page
+        function displayReceipt(receipt) {
+            const confirmationContainer = document.querySelector(".center");
+            confirmationContainer.innerHTML = `
+                Order Placed:
+                <br>
+                id: ${receipt.id}
+                <br>
+                ${receipt.description}
+                <br>
+                Total: ${receipt.cost.toFixed(2)}
+            `;
+        }
+
             const condimentButtons = document.querySelectorAll(".order-button");
 
             condimentButtons.forEach(button => {
@@ -236,6 +252,48 @@
                     addItemToCart(condiment);
                 });
             });
+            // Event listener for the confirm order button
+            if (confirmOrderButton) {
+                confirmOrderButton.addEventListener("click", function (event) {
+                    // Prevent the default behavior of the anchor element
+                    event.preventDefault();
+                    // Confirm the order when the button is clicked
+                    confirmOrder();
+                });
+            } else {
+                console.error("Button with class 'confirm-order-button' not found");
+            }
+
+            // Function to confirm the order and send data to the backend
+            function confirmOrder() {
+                console.log('In confirm order function');
+
+                const order = {
+                    beverage: selectedBeverage,
+                    condiments: cartItems,
+                };
+
+                // Log the order and JSON string for debugging
+                console.log('Order:', order);
+                const jsonOrder = JSON.stringify(order);
+                console.log('JSON Order:', jsonOrder);
+
+                const backendEndpoint = 'http://localhost:8081/orders';
+
+                fetch(backendEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: jsonOrder, // Use the stringified JSON
+                })
+                .then(response => response.json())
+                .then(receipt => {
+                    // Display the receipt information on the confirmation page
+                    displayReceipt(receipt);
+                })
+                .catch(error => console.error('Error confirming order:', error));
+            }
 
             // Function to fetch condiment prices from the backend
             async function fetchCondimentPrices(selectedBeverage) {
