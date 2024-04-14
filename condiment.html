@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        * {
+            font-family: verdana;
+            background-color:#f8eaca;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        .title a {
+            color: brown;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .order-status a {
+            color: black;
+            text-decoration: none; 
+            cursor: pointer;
+        }
+
+        .condiment-container {
+            text-align: center;
+            
+        }
+
+        .condiment-button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 0px;
+            width: fit-content;
+            text-align: center;
+            margin: 0 auto; 
+        }
+
+
+        .condiment-button-grid button {
+            margin: 5px; 
+            padding: 15px 20px; 
+            border: none; 
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100px;
+            height: 40px;
+            box-sizing: border-box;
+            background-color: #d2a16f;
+            text-align: center;
+        }
+
+
+        .order-button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; 
+        }
+
+        .order-button {
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #d2a16f;
+            width: 150px;
+            height: 60px;
+
+        }
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="header">
+        <div class="title"><a href="index.html">Coffee order system</a></div>
+        <div class="order-status"><a href="status.html">Order Status</a></div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br> 
+        
+    <div class="condiment-container">
+        <p style="text-align: center;"><b>Add the condiments</b></p>
+        
+        <div class="condiment-button-grid">
+            <button id="milk-button">Milk</button>
+            <button id="mocha-button">Mocha</button>
+            <button id="soy-button">Soy</button>
+            <button id="whip-button">Whip</button>
+        </div>
+
+        <p><b>My order</b></p>
+        <button id="selectedBeverageButton" class="order-button">Selected Beverage</button>
+        <button id="condiment1Button" class="order-button">condiment 1</button>
+        <button id="condiment2Button" class="order-button">condiment 2</button>
+        <button id="condiment3Button" class="order-button">condiment 3</button>
+        <button id="condiment4Button" class="order-button">condiment 4</button>
+        <button class="order-button" onclick="confirmOrder()">confirm order</button>
+    </div>
+          
+    
+
+    <script>
+        let host = "https://coffee-orderhw8-latest.onrender.com";
+        let selectedCondiments = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedBeverageType = localStorage.getItem("selectedBeverageType");
+            let selectedBeverageCost = localStorage.getItem("selectedBeverageCost");
+
+            console.log("Selected Beverage Type:", selectedBeverageType);
+            console.log("Selected Beverage Cost:", selectedBeverageCost);
+
+            document.getElementById('selectedBeverageButton').addEventListener('click', function() {
+                window.location.href = "beverage.html";
+            });
+
+            document.getElementById('milk-button').addEventListener('click', () => handleCondimentClick('Milk'));
+            document.getElementById('mocha-button').addEventListener('click', () => handleCondimentClick('Mocha'));
+            document.getElementById('soy-button').addEventListener('click', () => handleCondimentClick('Soy'));
+            document.getElementById('whip-button').addEventListener('click', () => handleCondimentClick('Whip'));
+
+            document.getElementById('condiment1Button').addEventListener('click', () => handleCondimentXClick(0));
+            document.getElementById('condiment2Button').addEventListener('click', () => handleCondimentXClick(1));
+            document.getElementById('condiment3Button').addEventListener('click', () => handleCondimentXClick(2));
+            document.getElementById('condiment4Button').addEventListener('click', () => handleCondimentXClick(3));
+
+            updateCartDisplay();
+        });
+        function handleCondimentClick(condiment) {
+            selectedCondiments.push(condiment);
+            updateCartDisplay();
+        }
+
+        function handleCondimentXClick(index) {
+            selectedCondiments.splice(index, 1);
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            let cartContainer = document.getElementById('cart-container');
+            cartContainer.innerHTML = "<p><b>My order</b></p>";
+
+            selectedCondiments.forEach((condiment, index) => {
+                let condimentButton = document.createElement('button');
+                condimentButton.className = 'order-button';
+                condimentButton.textContent = condiment;
+                condimentButton.addEventListener('click', () => handleCondimentXClick(index));
+                cartContainer.appendChild(condimentButton);
+            });
+
+            for (let i = 1; i <= 4; i++) {
+                let condimentXButton = document.getElementById(`condiment${i}Button`);
+                if (i <= selectedCondiments.length) {
+                    condimentXButton.textContent = selectedCondiments[i - 1];
+                } else {
+                    condimentXButton.textContent = `condiment ${i}`;
+                }
+            }
+        }
+
+        function confirmOrder() {
+
+            fetch(`${host}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    beverage: selectedBeverageType,
+                    condiments: selectedCondiments
+                    })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Order saved successfully:", data);
+
+
+                return fetch(`${host}/${data.orderId}`);
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Receipt details fetched successfully:", data);
+                updateReceiptUI(data);
+            })
+            .catch(error => console.error("Error confirming order:", error));
+        }
+
+        function updateReceiptUI(data) {
+            let orderInfoContainer = document.getElementById('orderInfo');
+            let orderPlacedParagraph = document.createElement('p');
+
+            orderPlacedParagraph.textContent = "Order placed:";
+            orderInfoContainer.appendChild(orderPlacedParagraph);
+
+            let orderIdParagraph = document.createElement('p');
+            orderIdParagraph.textContent = 'Order id: ${data.orderId}';
+            orderInfoContainer.appendChild(orderIdParagraph);
+
+            let orderDetailsParagraph = document.createElement('p');
+            orderDetailsParagraph.textContent = 'Order details: ${data.orderDetails}';
+            orderInfoContainer.appendChild(orderDetailsParagraph);
+
+            let totalCostParagraph = document.createElement('p');
+            totalCostParagraph.textContent = 'Total Cost: $${data.cost}';
+            orderInfoContainer.appendChild(totalCostParagraph);
+            }
+    </script>
+    
+</body>
+</html>

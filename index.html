@@ -1,78 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coffee Order</title>
     <style>
-        body {
-            background-color: #F8EACA;
-        }
-        /* Create a top navigation bar with a black background color  */
-        .topnav {
-            overflow: hidden;
+        * {
+            font-family: verdana;
+            background-color:#f8eaca;
         }
 
-        /* Style the links inside the navigation ba hher */
-        .topnav a {
-        float: left;
-        color: brown;
-        font-weight: bold;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        font-size: 20px;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            font-weight: bold;
         }
 
-        /* Change the color of links on hover */
-        .topnav a:hover {
-        background-color: #ddd;
-        color: black;
+        .title {
+            color: brown;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Create a right-aligned (split) link inside the navigation bar */
-        .topnav a.split {
-        float: right;
-        color: black;
-        font-weight: bold;
+        .login a {
+            color: brown;
+            text-decoration: none; 
+            cursor: pointer;
         }
 
-        .center {
+        .order-status a {
+            color: black;
+            text-decoration: none; 
+            cursor: pointer;
+        }
+
+        .start-order-btn-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 80vh; /* Adjust the height as needed */
+            margin-top: 20px; 
         }
 
-        .order-button {
-            padding: 30px;
-            background-color: burlywood;
-            color: black;
-            font-size: 24px;
+        .start-order-btn {
+            background-color: #d2a16f; 
+            padding: 15px 30px; 
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-
-        }
-
-        .order-button:hover {
-            background-color: #8B735B; 
-        }
-
-        a {
+            color: black;
+            font-size: 18px;
             text-decoration: none;
+            cursor: pointer;
+            text-align: center;
         }
+        
     </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
 </head>
 <body>
-    <div class="topnav">
-        <a href="#home">Coffee Order System</a>
-        <a href="#orderStatus" class="split">Order Status</a>
-    </div>
-
-    <div class="center">
-        <a href="order.html" class="order-button">Start Your Order Here</a>
+    
+    <div class="header">
+        <div class="title">Coffee order system</div>
+        <div class="login"><a href="login.html">Login</a></div>
+        <div class="order-status"><a href="status.html">Order Status</a></div>
     </div>
     
+    <div class="start-order-btn-container">
+        <a href="beverage.html" class="start-order-btn">Start the order here</a>
+    </div>
 </body>
 </html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        * {
+            font-family: verdana;
+            background-color:#f8eaca;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        .title a {
+            color: brown;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .order-status a {
+            color: black;
+            text-decoration: none; 
+            cursor: pointer;
+        }
+        .button-array {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .button {
+            background-color: #d2a16f;
+            padding: 15px 20px; 
+            border: none;
+            color: black;
+            font-size: 18px;
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+            box-sizing: border-box; 
+            cursor: pointer;
+        }
+        
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="header">
+        <div class="title"><a href="index.html">Coffee order system</a></div>
+        <div class="order-status"><a href="status.html">Order Status</a></div>
+    </div>
+
+    <p style="text-align: center; font-size: 24px;"><b>Select the beverage</b></p>
+
+    <div class="button-array">
+        <button onclick="selectBeverage('DarkRoast', 1.99)" class="button">Dark Roast</button>
+        <button onclick="selectBeverage('Espresso', 1.34)" class="button">Espresso</button>
+        <button onclick="selectBeverage('HouseBlend', 1.65)" class="button">House Blend</button>
+        <button onclick="selectBeverage('Decaf', 2.99)" class="button">Decaf</button>
+    </div>
+
+    <script>
+        let host = "https://coffee-orderhw8-latest.onrender.com";
+
+        async function selectBeverage(beverageType, beverageCost) {
+            try {
+                localStorage.setItem("selectedBeverageType", beverageType);
+                localStorage.setItem("selectedBeverageCost", beverageCost);
+
+                let response = await fetch(`${host}/selected-beverage`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ beverageType })
+                });
+
+                if (response.ok) {
+                    console.log("Redirecting to condiment.html");
+                    window.location.href = "condiment.html";
+                } else {
+                    console.error("Failed to save selected beverage on the server.");
+                }
+            } catch (error) {
+                console.error("Error occurred during the request:", error);
+            }
+        }
+    </script>
+    
+</body>
+</html>
